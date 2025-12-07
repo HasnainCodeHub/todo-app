@@ -1,0 +1,46 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+# uv specific
+.uv/
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.bak
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+
+# Temporary files
+*.tmp
+*.temp
+*~
+# My stuff
+*.mp4
+*.rar
+*.zip
+*.tar
+*.gz
+*.pdf
+*.txt
+*.exe
+# Gemini related ignores
+.gemini/
+history/

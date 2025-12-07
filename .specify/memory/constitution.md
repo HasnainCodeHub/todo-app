@@ -1,55 +1,212 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+Version change: undefined -> 1.0.0
+Modified principles:
+  - All principles replaced due to full content overhaul.
+Added sections:
+  - 1. Purpose & Vision
+  - 2. Core Development Principles
+  - 3. Phase I Governing Rules (Current Focus)
+  - 4. Architectural Principles (All Phases)
+  - 5. AI Collaboration Rules
+  - 6. Documentation & Traceability
+  - 7. Cloud-Native & AI-Native Trajectory
+  - 8. Success Definition
+  - 9. Guiding Motto
+Removed sections:
+  - All sections from previous template removed due to full content overhaul.
+Templates requiring updates:
+  - ✅ .specify/templates/plan-template.md
+  - ✅ .specify/templates/spec-template.md
+  - ✅ .specify/templates/tasks-template.md
+  - ✅ .gemini/commands/sp.adr.toml
+  - ✅ .gemini/commands/sp.analyze.toml
+  - ✅ .gemini/commands/sp.checklist.toml
+  - ✅ .gemini/commands/sp.clarify.toml
+  - ✅ .gemini/commands/sp.constitution.toml
+  - ✅ .gemini/commands/sp.git.commit_pr.toml
+  - ✅ .gemini/commands/sp.implement.toml
+  - ✅ .gemini/commands/sp.phr.toml
+  - ✅ .gemini/commands/sp.plan.toml
+  - ✅ .gemini/commands/sp.specify.toml
+  - ✅ .gemini/commands/sp.tasks.toml
+Follow-up TODOs: None
+-->
+# 📜 Project Constitution
+## *The Evolution of Todo – Spec-Driven Cloud-Native AI System*
 
-## Core Principles
+---
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+## 1. Purpose & Vision
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+This project exists to demonstrate mastery of Spec-Driven Development and AI-Native Software Architecture by evolving a Todo application from a simple in-memory console app into a distributed, cloud-native, AI-powered system deployed on Kubernetes.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+The goal is not writing code manually, but architecting intelligence by guiding AI agents using precise specifications, constraints, and architectural intent.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+Success is measured by:
+- Clarity and quality of specifications  
+- Faithful AI-generated implementations  
+- Incremental evolution across all 5 phases  
+- Cloud-native and AI-native correctness  
+- Reusable Intelligence and agent governance  
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+---
 
-### [PRINCIPLE_6_NAME]
+## 2. Core Development Principles
 
+### 2.1 Spec-Driven First (Non-Negotiable)
 
-[PRINCIPLE__DESCRIPTION]
+- No implementation may exist without a written spec.
+- Every feature must have:
+  - A Markdown spec
+  - Clear inputs, outputs, constraints, and edge cases
+- Code is generated only by AI tools (Claude Code, Gemini, or similar).
+- The human role is spec refinement, review, and architecture.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+❌ Manual coding is not allowed.  
+✅ Refining specs until AI generates correct code is required.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+---
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## 2.2 Phase-by-Phase Evolution
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+The system must evolve incrementally, never skipping phases or backporting advanced features.
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+| Phase | Description                            |
+|-------|----------------------------------------|
+| I     | In-memory Python console app           |
+| II    | Full-stack web application             |
+| III   | AI-powered Todo chatbot                |
+| IV    | Local Kubernetes deployment            |
+| V     | Advanced cloud-native distributed app  |
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+Each phase:
+- Builds strictly on the previous phase  
+- Keeps earlier functionality intact  
+- Introduces only phase-appropriate technology  
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+---
+
+## 3. Phase I Governing Rules (Current Focus)
+
+### 3.1 Scope Boundary
+
+Phase I MUST:
+- Be a Python console application
+- Store all tasks in memory only
+- Use no databases
+- Use no web frameworks
+- Use no AI/chatbot features
+- Use no cloud-native tooling
+
+Phase I MUST implement these features:
+1. Add Task  
+2. Delete Task  
+3. Update Task  
+4. View Task List  
+5. Mark Task as Complete / Incomplete  
+
+No priorities, tags, reminders, or AI behavior are allowed in Phase I.
+
+---
+
+### 3.2 Python Quality Standards
+
+- Python version: 3.13+  
+- Structured project layout (e.g. `src/` with modules)  
+- Clean, readable, minimal code  
+- Explicit error handling (invalid IDs, empty lists, invalid input)  
+- Deterministic CLI behavior (no hidden or surprising state)  
+
+---
+
+## 4. Architectural Principles (All Phases)
+
+### 4.1 Clean Architecture
+
+- Separate:
+  - Domain logic (task entities, operations)
+  - Application orchestration (use-cases, services)
+  - Interface layers (CLI in Phase I, web UI/API later, chatbot later)
+- Business logic must remain reusable across phases.
+
+### 4.2 Reusability & Evolution Readiness
+
+- Phase I architecture must anticipate:
+  - Later database persistence
+  - API exposure
+  - AI command routing and agents
+- No hard-coded behavior that blocks future phases.
+
+---
+
+## 5. AI Collaboration Rules
+
+### 5.1 Role Definition
+
+- Human: Product Architect, Spec Author, Reviewer  
+- AI: Implementer, Refiner, Generator  
+
+### 5.2 Allowed AI Actions
+
+- Generate code  
+- Refactor code  
+- Propose architecture  
+- Identify missing requirements and edge cases  
+
+### 5.3 Disallowed AI Behavior
+
+- Ignoring or contradicting specs  
+- Adding extra features beyond current phase  
+- Introducing future-phase technologies early  
+- Overengineering Phase I beyond its scope  
+
+---
+
+## 6. Documentation & Traceability
+
+The repository must always contain:
+
+- `README.md` — how to install and run each phase  
+- `GEMINI.md` (or equivalent AI instructions) — how to use AI agents on this repo  
+- `.specify/` folder with:
+  - Constitution
+  - Feature specs
+  - Spec history
+- Clear commit history aligned with specs and phases  
+
+Specs are the single source of truth, not the code.
+
+---
+
+## 7. Cloud-Native & AI-Native Trajectory
+
+While Phase I is local and simple, all decisions must respect future goals:
+
+- Kubernetes-native deployment  
+- Event-driven architecture (Kafka, Dapr)  
+- AI agent governance (OpenAI Agents SDK, MCP)  
+- Reusable Intelligence via Agent Skills and Subagents  
+- Cloud-native blueprints for deployment  
+
+These must not be implemented in Phase I, only anticipated.
+
+---
+
+## 8. Success Definition
+
+This project is successful when:
+
+- All 5 phases are completed via spec-driven AI generation  
+- Each phase is demonstrable and working  
+- The system evolves cleanly without large rewrites  
+- The project reflects architect-level thinking, not ad-hoc scripting  
+- The work meets Panaversity hackathon expectations and scoring criteria  
+
+---
+
+## 9. Guiding Motto
+
+“Specifications are the code.  
+AI writes syntax.  
+Architects write intent.”
