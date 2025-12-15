@@ -28,6 +28,11 @@ Thumbs.db
 *.sqlite
 *.db
 
+# Environment files with secrets
+.env
+.env.local
+*.env.local
+
 # Temporary files
 *.tmp
 *.temp
@@ -44,3 +49,4 @@ Thumbs.db
 # Gemini related ignores
 .gemini/
 history/
+nul

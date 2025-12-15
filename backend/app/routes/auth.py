@@ -24,21 +24,33 @@ async def register_user(
     user_in: UserCreate,
     session: AsyncSession = Depends(get_session),
 ):
+    # Check for existing user by email
     result = await session.execute(
         select(User).where(User.email == user_in.email)
     )
-    existing_user = result.scalar_one_or_none()
-
-    if existing_user:
+    if result.scalar_one_or_none():
         raise HTTPException(
             status_code=400,
             detail="Email already registered",
+        )
+
+    # Check for existing user by phone number
+    result = await session.execute(
+        select(User).where(User.phone_number == user_in.phone_number)
+    )
+    if result.scalar_one_or_none():
+        raise HTTPException(
+            status_code=400,
+            detail="Phone number already registered",
         )
 
     hashed_password = get_password_hash(user_in.password)
 
     user = User(
         email=user_in.email,
+        full_name=user_in.full_name,
+        father_name=user_in.father_name,
+        phone_number=user_in.phone_number,
         password_hash=hashed_password,
     )
 
@@ -69,7 +81,7 @@ async def login_for_access_token(
         )
 
     access_token = create_access_token(
-        data={"sub": str(user.id)}
+        data={"sub": str(user.id), "email": user.email}
     )
 
     return {

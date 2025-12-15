@@ -10,6 +10,7 @@ from app.database import create_tables, close_db, check_db_connection
 from app.routes.auth import router as auth_router
 from app.routes.tasks import router as tasks_router
 from app.routes.system import router as system_router
+from app.routes.users import router as users_router
 
 
 # -------------------------------------------------
@@ -67,6 +68,7 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/api/auth")
 app.include_router(tasks_router)
 app.include_router(system_router)
+app.include_router(users_router, prefix="/api")
 
 
 

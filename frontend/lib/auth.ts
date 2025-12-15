@@ -4,7 +4,7 @@
  */
 
 const TOKEN_KEY = "auth_token";
-const USER_ID_KEY = "user_id";
+const USER_KEY = "auth_user";
 
 /**
  * Checks if the code is running in a browser environment.
@@ -21,26 +21,26 @@ export function getAuthToken(): string | null {
 }
 
 /**
- * Stores the authentication token and user ID in localStorage.
+ * Stores the authentication token and user object in localStorage.
  * @param token - The JWT token.
- * @param userId - The ID of the authenticated user.
+ * @param user - The user object to store.
  */
-export function setAuthToken(token: string, userId: string): void {
+export function setAuthToken(token: string, user: any): void {
   if (isBrowser()) {
     localStorage.setItem(TOKEN_KEY, token);
-    localStorage.setItem(USER_ID_KEY, userId);
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
     // Dispatch a custom event to notify AuthGuard in the same tab
     window.dispatchEvent(new Event("auth-storage-change"));
   }
 }
 
 /**
- * Removes the authentication token and user ID from localStorage.
+ * Removes the authentication token and user object from localStorage.
  */
 export function clearAuthToken(): void {
   if (isBrowser()) {
     localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_ID_KEY);
+    localStorage.removeItem(USER_KEY);
     // Dispatch a custom event to notify AuthGuard in the same tab
     window.dispatchEvent(new Event("auth-storage-change"));
   }
@@ -76,34 +76,49 @@ function decodeJWT(token: string): any | null {
 }
 
 /**
- * Retrieves the current user's ID from localStorage.
- * This is a simplified version; a real app might store more user info.
- * @returns An object with the user's ID or null.
+ * Retrieves the current user's object from localStorage.
+ * @returns The user object or null if not found.
  */
-export function getCurrentUser(): { id: string | null; name?: string; email?: string } {
-  if (!isBrowser()) return { id: null };
-  // In a real app, you might parse a user object from localStorage
-  return {
-    id: localStorage.getItem(USER_ID_KEY),
-  };
+export function getCurrentUser(): any | null {
+  if (!isBrowser()) return null;
+  const userStr = localStorage.getItem(USER_KEY);
+  if (!userStr) return null;
+  try {
+    return JSON.parse(userStr);
+  } catch (error) {
+    console.error('Failed to parse user from localStorage:', error);
+    return null;
+  }
 }
 
 // NOTE: API call functions are kept for now as per instructions,
 // but in a larger refactor, these would move to a dedicated `lib/api.ts`.
 const API_BASE_URL = "http://127.0.0.1:8001/api";
 
-export async function register(email: string, password: string) {
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-    });
+export async function register(
+  email: string,
+  password: string,
+  fullName: string,
+  fatherName: string,
+  phoneNumber: string
+) {
+  const response = await fetch(`${API_BASE_URL}/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email,
+      password,
+      full_name: fullName,
+      father_name: fatherName,
+      phone_number: phoneNumber,
+    }),
+  });
 
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.detail || 'Registration failed.');
-    }
-    return response.json();
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || "Registration failed.");
+  }
+  return response.json();
 }
 
 export async function login(email: string, password: string) {
@@ -132,12 +147,12 @@ export async function login(email: string, password: string) {
 
     // Decode the JWT token to extract the user_id
     const payload = decodeJWT(accessToken);
-    if (!payload || !payload.sub) {
+    if (!payload) {
         throw new Error('Invalid token format');
     }
 
-    // Store the token and user_id in localStorage
-    setAuthToken(accessToken, payload.sub);
+    // Store the token and user object in localStorage
+    setAuthToken(accessToken, payload);
     
     return data;
 }

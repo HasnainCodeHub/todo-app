@@ -1,11 +1,11 @@
-"use client";
-
 import { useState } from "react";
-import Link from "next/link";
+import { motion } from "framer-motion";
 import { Task } from "@/lib/types";
-import PriorityBadge from "./PriorityBadge";
-import TagList from "./TagList";
+import { Edit, Trash2 } from "lucide-react";
 import DueDateIndicator from "./DueDateIndicator";
+import PriorityBadge from "./PriorityBadge";
+import Modal from "./ui/Modal";
+import Link from "next/link";
 
 interface TaskItemProps {
   task: Task;
@@ -13,115 +13,72 @@ interface TaskItemProps {
   onDelete: (id: number) => void;
 }
 
-export default function TaskItem({
-  task,
-  onToggleComplete,
-  onDelete,
-}: TaskItemProps) {
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+const priorityColors: { [key: string]: string } = {
+    high: 'from-red-500 to-orange-500',
+    medium: 'from-yellow-500 to-amber-500',
+    low: 'from-green-500 to-emerald-500',
+}
+
+export default function TaskItem({ task, onToggleComplete, onDelete }: TaskItemProps) {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleToggle = async () => {
     setIsProcessing(true);
-    try {
-      await onToggleComplete(task.id, task.completed);
-    } finally {
-      setIsProcessing(false);
-    }
+    await onToggleComplete(task.id, task.completed);
+    setIsProcessing(false);
   };
 
   const handleDelete = async () => {
     setIsProcessing(true);
-    try {
-      await onDelete(task.id);
-    } finally {
-      setIsProcessing(false);
-      setShowDeleteConfirm(false);
-    }
+    await onDelete(task.id);
   };
 
   return (
-    <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-      <div className="flex items-start gap-3">
-        <input
-          type="checkbox"
-          checked={task.completed}
-          onChange={handleToggle}
-          disabled={isProcessing}
-          className="mt-1 w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer disabled:opacity-50"
-        />
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-2">
-            <h3
-              className={`text-lg font-medium ${
-                task.completed ? "line-through opacity-50" : ""
-              }`}
-            >
-              {task.title}
-            </h3>
-            <div className="flex gap-2 flex-shrink-0">
-              <PriorityBadge priority={task.priority || "low"} />
-            </div>
-          </div>
-
-          {task.description && (
-            <p
-              className={`mt-1 text-sm text-gray-600 ${
-                task.completed ? "opacity-50" : ""
-              }`}
-            >
-              {task.description}
-            </p>
-          )}
-
-          <div className="mt-2 flex flex-wrap items-center gap-3">
-            <TagList tags={task.tags} />
-            <DueDateIndicator dueDate={task.due_date} completed={task.completed} />
-            {task.recurrence !== "none" && (
-              <span className="text-xs text-gray-500">
-                Recurs: {task.recurrence}
-              </span>
-            )}
-          </div>
-
-          <div className="mt-3 flex gap-2">
-            <Link
-              href={`/tasks/${task.id}/edit`}
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-            >
-              Edit
-            </Link>
-            {!showDeleteConfirm ? (
-              <button
-                onClick={() => setShowDeleteConfirm(true)}
-                disabled={isProcessing}
-                className="text-sm text-red-600 hover:text-red-800 font-medium disabled:opacity-50"
-              >
-                Delete
-              </button>
-            ) : (
-              <div className="flex gap-2 items-center">
-                <span className="text-sm text-gray-600">Delete this task?</span>
-                <button
-                  onClick={handleDelete}
-                  disabled={isProcessing}
-                  className="text-sm text-red-600 hover:text-red-800 font-medium disabled:opacity-50"
-                >
-                  Confirm
-                </button>
-                <button
-                  onClick={() => setShowDeleteConfirm(false)}
-                  disabled={isProcessing}
-                  className="text-sm text-gray-600 hover:text-gray-800 font-medium disabled:opacity-50"
-                >
-                  Cancel
-                </button>
+    <>
+      <motion.div
+        layout
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        className="bg-bg-secondary p-4 rounded-lg border border-white/10 flex flex-col gap-4 transition-shadow hover:shadow-lg"
+      >
+        <div className="flex items-start gap-4">
+            <div className={`w-1.5 flex-shrink-0 h-8 bg-gradient-to-b ${priorityColors[task.priority] || priorityColors.low} rounded-full`} />
+            <div className="flex-grow">
+              <h4 className={`font-semibold text-text-primary ${task.completed ? 'line-through text-opacity-50' : ''}`}>
+                {task.title}
+              </h4>
+              <div className="flex items-center flex-wrap gap-x-4 gap-y-1 mt-2">
+                <DueDateIndicator dueDate={task.due_date} completed={task.completed} />
+                <PriorityBadge priority={task.priority} />
               </div>
-            )}
-          </div>
+            </div>
+             <motion.button 
+                whileTap={{scale: 0.95}}
+                onClick={handleToggle} 
+                disabled={isProcessing} 
+                className={`flex-shrink-0 px-3 py-1 text-sm font-medium rounded-md transition-colors disabled:opacity-50 ${
+                    task.completed
+                    ? "bg-gray-700 text-gray-400 hover:bg-gray-600"
+                    : "bg-green-600 text-white hover:bg-green-700"
+                }`}
+            >
+                {task.completed ? "Completed" : "Mark as Complete"}
+            </motion.button>
         </div>
-      </div>
-    </div>
+        <div className="flex items-center justify-end gap-4 border-t border-white/10 pt-3">
+             <Link href={`/tasks/${task.id}/edit`} className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary transition-colors">
+                <Edit size={14}/> Edit
+            </Link>
+             <button onClick={() => setIsDeleteModalOpen(true)} className="flex items-center gap-2 text-sm text-red-500 hover:text-red-400 transition-colors">
+                <Trash2 size={14}/> Delete
+            </button>
+        </div>
+      </motion.div>
+      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} onConfirm={handleDelete} title="Confirm Deletion">
+        <p>Are you sure you want to delete the task "{task.title}"?</p>
+      </Modal>
+    </>
   );
 }

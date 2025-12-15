@@ -1,13 +1,16 @@
+export type Priority = "low" | "medium" | "high";
+export type Recurrence = "none" | "daily" | "weekly" | "monthly";
+
 export interface Task {
   id: number;
   user_id: string;  // Phase II: Multi-user support
   title: string;
   description: string | null;
   completed: boolean;
-  priority: "low" | "medium" | "high";
+  priority?: Priority;  // Optional - API may not always include this
   tags?: string[];
   due_date: string | null; // ISO string
-  recurrence: "none" | "daily" | "weekly" | "monthly";
+  recurrence?: Recurrence;  // Optional - API may not always include this
   created_at: string;
   updated_at: string;
 }
@@ -15,25 +18,25 @@ export interface Task {
 export interface TaskCreate {
   title: string;
   description?: string | null;
-  priority?: "low" | "medium" | "high";
+  priority?: Priority;
   tags?: string[];
   due_date?: string | null;
-  recurrence?: "none" | "daily" | "weekly" | "monthly";
+  recurrence?: Recurrence;
 }
 
 export interface TaskUpdate {
   title?: string;
   description?: string | null;
   completed?: boolean;
-  priority?: "low" | "medium" | "high";
+  priority?: Priority;
   tags?: string[];
   due_date?: string | null;
-  recurrence?: "none" | "daily" | "weekly" | "monthly";
+  recurrence?: Recurrence;
 }
 
 export interface TaskFilters {
   status?: "completed" | "pending";
-  priority?: "low" | "medium" | "high";
+  priority?: Priority;
   tag?: string;
   search?: string;
   due_from?: string;

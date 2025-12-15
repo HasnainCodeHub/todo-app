@@ -24,6 +24,18 @@ def create_access_token(data: dict) -> str:
     encoded_jwt = jwt.encode(to_encode, settings.BETTER_AUTH_SECRET, algorithm=JWT_ALGORITHM)
     return encoded_jwt
 
+
+def create_test_token(user_id: str | int) -> str:
+    """Create a test token for use in unit tests.
+
+    Args:
+        user_id: The user ID to encode in the token.
+
+    Returns:
+        A valid JWT token for testing.
+    """
+    return create_access_token({"sub": str(user_id)})
+
 async def get_current_user_id(
     authorization: Optional[str] = Header(None, alias="Authorization"),
 ) -> int:

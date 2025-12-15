@@ -31,11 +31,11 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variants = {
       primary: `
-        bg-gradient-to-r from-blue-600 to-blue-700
-        hover:from-blue-700 hover:to-blue-800
-        text-white
-        shadow-lg shadow-blue-500/25
-        focus:ring-blue-500
+        bg-gradient-to-r from-accent-primary to-accent-secondary
+        hover:opacity-90
+        text-black
+        shadow-lg shadow-cyan-500/30
+        focus:ring-accent-primary
       `,
       secondary: `
         bg-white/10 backdrop-blur-sm

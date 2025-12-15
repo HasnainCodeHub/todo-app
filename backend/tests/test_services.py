@@ -11,12 +11,13 @@ from app.services.task_service import (
     get_task_by_id,
     update_task,
     delete_task,
+    update_task_status,
 )
 from app.exceptions import TaskNotFoundError
 
-# Test user IDs for all service tests
-TEST_USER_ID = "test_service_user"
-OTHER_USER_ID = "another_user"
+# Test user IDs for all service tests (must be integers for owner_id)
+TEST_USER_ID = 123
+OTHER_USER_ID = 456
 
 
 @pytest.mark.asyncio
@@ -28,7 +29,7 @@ async def test_create_task_valid(test_session):
     assert task.id is not None
     assert task.title == "Buy groceries"
     assert task.completed is False
-    assert task.user_id == TEST_USER_ID
+    assert task.owner_id == TEST_USER_ID
 
 
 @pytest.mark.asyncio
@@ -42,7 +43,7 @@ async def test_get_tasks_all_for_user(test_session):
     # Get all tasks for the primary test user
     tasks = await get_tasks(test_session, user_id=TEST_USER_ID)
     assert len(tasks) == 2
-    assert all(t.user_id == TEST_USER_ID for t in tasks)
+    assert all(t.owner_id == TEST_USER_ID for t in tasks)
 
 
 @pytest.mark.asyncio
@@ -112,4 +113,42 @@ async def test_delete_task(test_session):
 
     with pytest.raises(TaskNotFoundError):
         await get_task_by_id(test_session, task_id, user_id=TEST_USER_ID)
+
+
+@pytest.mark.asyncio
+async def test_update_task_status_complete(test_session):
+    """Test marking a task as completed via update_task_status."""
+    task = await create_task(test_session, TaskCreate(title="Test Task"), user_id=TEST_USER_ID)
+    await test_session.commit()
+    assert task.completed is False
+
+    updated_task = await update_task_status(test_session, task.id, completed=True, user_id=TEST_USER_ID)
+    await test_session.commit()
+
+    assert updated_task.id == task.id
+    assert updated_task.completed is True
+
+
+@pytest.mark.asyncio
+async def test_update_task_status_incomplete(test_session):
+    """Test marking a task as incomplete via update_task_status."""
+    task = await create_task(test_session, TaskCreate(title="Test Task"), user_id=TEST_USER_ID)
+    task.completed = True
+    await test_session.commit()
+
+    updated_task = await update_task_status(test_session, task.id, completed=False, user_id=TEST_USER_ID)
+    await test_session.commit()
+
+    assert updated_task.id == task.id
+    assert updated_task.completed is False
+
+
+@pytest.mark.asyncio
+async def test_update_task_status_wrong_owner(test_session):
+    """Test that update_task_status raises TaskNotFoundError for wrong owner."""
+    task = await create_task(test_session, TaskCreate(title="Private Task"), user_id=TEST_USER_ID)
+    await test_session.commit()
+
+    with pytest.raises(TaskNotFoundError):
+        await update_task_status(test_session, task.id, completed=True, user_id=OTHER_USER_ID)
 

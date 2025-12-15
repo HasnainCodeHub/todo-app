@@ -1,7 +1,12 @@
 "use client";
 
 import { useCallback, useState } from 'react';
-import { createTask as apiCreateTask, updateTask as apiUpdateTask, deleteTask as apiDeleteTask } from '@/lib/api'; 
+import {
+  createTask as apiCreateTask,
+  updateTask as apiUpdateTask,
+  deleteTask as apiDeleteTask,
+  toggleTaskStatus as apiToggleTaskStatus
+} from '@/lib/api';
 import { TaskCreate, TaskUpdate, Task } from '@/lib/types';
 
 export function useTaskMutations() {
@@ -40,13 +45,13 @@ export function useTaskMutations() {
     [performMutation]
   );
 
-  const completeTask = useCallback((id: number): Promise<Task> => 
-    performMutation(() => apiUpdateTask(id, { completed: true }), "Failed to complete task"), 
+  const completeTask = useCallback((id: number): Promise<Task> =>
+    performMutation(() => apiToggleTaskStatus(id, true), "Failed to complete task"),
     [performMutation]
   );
 
-  const incompleteTask = useCallback((id: number): Promise<Task> => 
-    performMutation(() => apiUpdateTask(id, { completed: false }), "Failed to mark task incomplete"), 
+  const incompleteTask = useCallback((id: number): Promise<Task> =>
+    performMutation(() => apiToggleTaskStatus(id, false), "Failed to mark task incomplete"),
     [performMutation]
   );
 

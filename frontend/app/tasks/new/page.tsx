@@ -3,16 +3,17 @@
 import { useRouter } from "next/navigation";
 import TaskForm from "@/components/TaskForm";
 import { useTaskMutations } from "@/hooks/useTaskMutations";
-import { TaskCreate } from "@/lib/types";
+import { TaskCreate, TaskUpdate } from "@/lib/types";
 import AuthGuard from "@/components/AuthGuard";
-import Header from "@/components/Header";
+import PageWrapper from "@/components/global/PageWrapper";
+
 
 function NewTaskContent() {
   const router = useRouter();
   const { createTask } = useTaskMutations();
 
-  const handleSubmit = async (data: TaskCreate) => {
-    await createTask(data);
+  const handleSubmit = async (data: TaskCreate | TaskUpdate) => {
+    await createTask(data as TaskCreate);
     router.push("/dashboard");
   };
 
@@ -21,17 +22,16 @@ function NewTaskContent() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <Header />
+    <PageWrapper>
       <div className="max-w-2xl mx-auto">
         <div className="mb-6">
-          <h2 className="text-3xl font-bold text-gray-900">Create New Task</h2>
-          <p className="text-gray-600 mt-2">
+          <h2 className="text-3xl font-bold text-text-primary">Create New Task</h2>
+          <p className="text-text-secondary mt-2">
             Fill in the details below to create a new task
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-bg-secondary rounded-lg shadow-lg border border-white/10 p-6">
           <TaskForm
             onSubmit={handleSubmit}
             onCancel={handleCancel}
@@ -39,7 +39,7 @@ function NewTaskContent() {
           />
         </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 }
 

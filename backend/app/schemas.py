@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, validator
 from datetime import datetime
 
 
@@ -9,11 +9,24 @@ from datetime import datetime
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
+    full_name: str
+    father_name: str
+    phone_number: str
+
+    @validator("phone_number")
+    def validate_phone_number(cls, v):
+        if not v.isdigit():
+            raise ValueError("Phone number must contain only digits.")
+        if not 10 <= len(v) <= 15:
+            raise ValueError("Phone number must be between 10 and 15 digits.")
+        return v
 
 
 class UserResponse(BaseModel):
     id: int
     email: EmailStr
+    full_name: str
+    phone_number: str
     created_at: datetime
 
     class Config:
@@ -42,6 +55,11 @@ class TaskUpdate(BaseModel):
     title: str | None = None
     completed: bool | None = None
     priority: str | None = None
+
+
+class TaskStatusUpdate(BaseModel):
+    """Schema for updating only the completion status of a task."""
+    completed: bool
 
 
 class TaskResponse(BaseModel):
