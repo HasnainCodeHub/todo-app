@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Path
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_session
-from app.schemas import TaskCreate, TaskUpdate, TaskResponse
+from app.schemas import TaskCreate, TaskUpdate, TaskResponse, TaskStatusUpdate
 from app.services import task_service
 from app.exceptions import TaskNotFoundError
 from app.auth import get_current_user_id
@@ -56,9 +56,33 @@ async def update_task(
     user_id: int = Depends(get_current_user_id),
     session: AsyncSession = Depends(get_session)
 ):
-    """Update an existing task."""
+    """Update an existing task. Rejects updates if the task is completed."""
     try:
+        # Get the current task to check if it's completed
+        current_task = await task_service.get_task_by_id(session, task_id, user_id)
+        if current_task.completed:
+            raise HTTPException(
+                status_code=400,
+                detail="Cannot edit a completed task. Mark it as incomplete first."
+            )
         task = await task_service.update_task(session, task_id, task_data, user_id)
+        return task
+    except TaskNotFoundError as e:
+        raise HTTPException(status_code=404, detail=e.message)
+
+
+@router.patch("/{task_id}/status", response_model=TaskResponse)
+async def update_task_status(
+    status_data: TaskStatusUpdate,
+    task_id: int = Path(..., description="Task ID"),
+    user_id: int = Depends(get_current_user_id),
+    session: AsyncSession = Depends(get_session)
+):
+    """Update only the completion status of a task."""
+    try:
+        task = await task_service.update_task_status(
+            session, task_id, status_data.completed, user_id
+        )
         return task
     except TaskNotFoundError as e:
         raise HTTPException(status_code=404, detail=e.message)

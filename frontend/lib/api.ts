@@ -1,8 +1,33 @@
-import { Task, TaskCreate, TaskUpdate, TaskFilters } from "./types";
+import { Task, TaskCreate, TaskUpdate, TaskFilters, Priority, Recurrence } from "./types";
 import { getAuthToken } from "./auth";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8001/api";
+
+// Default values for task normalization
+const DEFAULT_PRIORITY: Priority = "low";
+const DEFAULT_RECURRENCE: Recurrence = "none";
+
+/**
+ * Normalizes a task object to ensure all optional fields have sensible defaults.
+ * This prevents runtime errors when the API returns incomplete data.
+ */
+function normalizeTask(task: Partial<Task>): Task {
+  return {
+    ...task,
+    completed: task.completed ?? false, // Ensure completed is always a boolean
+    priority: task.priority || DEFAULT_PRIORITY,
+    recurrence: task.recurrence || DEFAULT_RECURRENCE,
+    tags: task.tags || [],
+  } as Task;
+}
+
+/**
+ * Normalizes an array of tasks.
+ */
+function normalizeTasks(tasks: Partial<Task>[]): Task[] {
+  return tasks.map(normalizeTask);
+}
 
 export class ApiError extends Error {
   constructor(
@@ -71,23 +96,33 @@ export async function fetchTasks(filters?: TaskFilters, sort?: any): Promise<Tas
     headers: requireAuthHeaders(),
   });
 
-  return handleResponse(response);
+  const tasks = await handleResponse<Partial<Task>[]>(response);
+  return normalizeTasks(tasks);
 }
 
 export async function fetchTask(id: number): Promise<Task> {
   const response = await fetch(buildUrl(`/tasks/${id}`), {
     headers: requireAuthHeaders(),
   });
-  return handleResponse(response);
+  const task = await handleResponse<Partial<Task>>(response);
+  return normalizeTask(task);
 }
 
 export async function createTask(data: TaskCreate): Promise<Task> {
+  // Ensure default priority is set before sending to API
+  const normalizedData: TaskCreate = {
+    ...data,
+    priority: data.priority || DEFAULT_PRIORITY,
+    recurrence: data.recurrence || DEFAULT_RECURRENCE,
+  };
+
   const response = await fetch(buildUrl("/tasks"), {
     method: "POST",
     headers: requireAuthHeaders(),
-    body: JSON.stringify(data),
+    body: JSON.stringify(normalizedData),
   });
-  return handleResponse(response);
+  const task = await handleResponse<Partial<Task>>(response);
+  return normalizeTask(task);
 }
 
 export async function updateTask(id: number, data: TaskUpdate): Promise<Task> {
@@ -96,7 +131,8 @@ export async function updateTask(id: number, data: TaskUpdate): Promise<Task> {
     headers: requireAuthHeaders(),
     body: JSON.stringify(data),
   });
-  return handleResponse(response);
+  const task = await handleResponse<Partial<Task>>(response);
+  return normalizeTask(task);
 }
 
 export async function deleteTask(id: number): Promise<void> {
@@ -105,4 +141,21 @@ export async function deleteTask(id: number): Promise<void> {
     headers: requireAuthHeaders(),
   });
   await handleResponse(response);
+}
+
+export async function toggleTaskStatus(id: number, completed: boolean): Promise<Task> {
+  const response = await fetch(buildUrl(`/tasks/${id}/status`), {
+    method: "PATCH",
+    headers: requireAuthHeaders(),
+    body: JSON.stringify({ completed }),
+  });
+  const task = await handleResponse<Partial<Task>>(response);
+  return normalizeTask(task);
+}
+
+export async function fetchUserProfile() {
+    const response = await fetch(buildUrl("/users/me"), {
+        headers: requireAuthHeaders(),
+    });
+    return handleResponse(response);
 }

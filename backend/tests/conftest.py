@@ -30,9 +30,9 @@ from app.database import get_session
 # Test database URL - SQLite in-memory for testing
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
-# Test user ID for auth tests
-TEST_USER_ID = "test_user_123"
-TEST_USER_ID_2 = "other_user_456"
+# Test user ID for auth tests (must be integers for JWT auth)
+TEST_USER_ID = 123
+TEST_USER_ID_2 = 456
 
 @pytest.fixture(scope="session")
 def test_database_url() -> str:

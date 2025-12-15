@@ -82,3 +82,14 @@ async def delete_task(session: AsyncSession, task_id: int, user_id: int) -> None
     await session.delete(task)
     await session.flush()
     logger.info(f"Deleted task {task_id} for user {user_id}")
+
+
+async def update_task_status(session: AsyncSession, task_id: int, completed: bool, user_id: int) -> Task:
+    """Update only the completion status of a task, ensuring ownership."""
+    task = await get_task_by_id(session, task_id, user_id)
+    task.completed = completed
+    task.updated_at = datetime.now(timezone.utc)
+    await session.flush()
+    await session.refresh(task)
+    logger.info(f"Updated task {task_id} status to completed={completed} for user {user_id}")
+    return task

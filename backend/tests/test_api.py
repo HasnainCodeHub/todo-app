@@ -16,7 +16,7 @@ def test_create_task(client, auth_headers, test_user_id):
     data = response.json()
     assert data["title"] == "My first task"
     assert data["completed"] is False
-    assert data["user_id"] == test_user_id
+    assert data["owner_id"] == test_user_id
     assert "id" in data
     assert "created_at" in data
 
@@ -36,7 +36,7 @@ def test_get_task(client, auth_headers, test_user_id):
     data = response.json()
     assert data["id"] == task_id
     assert data["title"] == "Test Task"
-    assert data["user_id"] == test_user_id
+    assert data["owner_id"] == test_user_id
 
 def test_get_task_wrong_owner(client, auth_headers, other_auth_headers):
     """Test that a user cannot get a task belonging to another user."""
@@ -76,7 +76,8 @@ def test_filter_by_status(client, auth_headers):
     client.post("/api/tasks", json={"title": "Pending Task"}, headers=auth_headers)
     create_response = client.post("/api/tasks", json={"title": "Completed Task"}, headers=auth_headers)
     task_id = create_response.json()["id"]
-    client.put(f"/api/tasks/{task_id}", json={"completed": True}, headers=auth_headers)
+    # Use PATCH to mark as completed (new dedicated endpoint)
+    client.patch(f"/api/tasks/{task_id}/status", json={"completed": True}, headers=auth_headers)
 
     # Filter by pending
     pending_response = client.get("/api/tasks?status=pending", headers=auth_headers)
@@ -91,6 +92,65 @@ def test_filter_by_status(client, auth_headers):
     completed_tasks = completed_response.json()
     assert len(completed_tasks) == 1
     assert completed_tasks[0]["title"] == "Completed Task"
+
+
+def test_patch_task_status(client, auth_headers):
+    """Test PATCH /api/tasks/{id}/status updates completion status."""
+    create_response = client.post("/api/tasks", json={"title": "Test Task"}, headers=auth_headers)
+    task_id = create_response.json()["id"]
+
+    # Mark as completed
+    response = client.patch(f"/api/tasks/{task_id}/status", json={"completed": True}, headers=auth_headers)
+    assert response.status_code == 200
+    assert response.json()["completed"] is True
+
+    # Mark as incomplete
+    response = client.patch(f"/api/tasks/{task_id}/status", json={"completed": False}, headers=auth_headers)
+    assert response.status_code == 200
+    assert response.json()["completed"] is False
+
+
+def test_patch_task_status_unauthorized(client):
+    """Test that PATCH /api/tasks/{id}/status fails without auth."""
+    response = client.patch("/api/tasks/1/status", json={"completed": True})
+    assert response.status_code == 401
+
+
+def test_patch_task_status_not_found(client, auth_headers):
+    """Test that PATCH /api/tasks/{id}/status returns 404 for non-existent task."""
+    response = client.patch("/api/tasks/99999/status", json={"completed": True}, headers=auth_headers)
+    assert response.status_code == 404
+
+
+def test_put_rejects_edit_on_completed_task(client, auth_headers):
+    """Test that PUT /api/tasks/{id} rejects edits on completed tasks."""
+    # Create a task
+    create_response = client.post("/api/tasks", json={"title": "Original Title"}, headers=auth_headers)
+    task_id = create_response.json()["id"]
+
+    # Mark as completed using PATCH
+    client.patch(f"/api/tasks/{task_id}/status", json={"completed": True}, headers=auth_headers)
+
+    # Try to edit the completed task - should fail
+    response = client.put(f"/api/tasks/{task_id}", json={"title": "New Title"}, headers=auth_headers)
+    assert response.status_code == 400
+    assert "completed" in response.json()["detail"].lower()
+
+
+def test_put_allows_edit_after_marking_incomplete(client, auth_headers):
+    """Test that PUT /api/tasks/{id} allows edits after marking task incomplete."""
+    # Create and complete a task
+    create_response = client.post("/api/tasks", json={"title": "Original Title"}, headers=auth_headers)
+    task_id = create_response.json()["id"]
+    client.patch(f"/api/tasks/{task_id}/status", json={"completed": True}, headers=auth_headers)
+
+    # Mark as incomplete
+    client.patch(f"/api/tasks/{task_id}/status", json={"completed": False}, headers=auth_headers)
+
+    # Now edit should work
+    response = client.put(f"/api/tasks/{task_id}", json={"title": "New Title"}, headers=auth_headers)
+    assert response.status_code == 200
+    assert response.json()["title"] == "New Title"
 
 def test_db_health_endpoint(client):
     """Test the database health check endpoint."""
