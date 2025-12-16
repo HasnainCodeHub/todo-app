@@ -45,6 +45,8 @@ Thumbs.db
 *.gz
 *.pdf
 *.txt
+!requirements.txt
+!*/requirements.txt
 *.exe
 # Gemini related ignores
 .gemini/
