@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useMemo, useCallback } from "react";
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import { Task } from "@/lib/types";
 import { useTasks } from "@/hooks/useTasks";
 import { useTaskMutations } from "@/hooks/useTaskMutations";
 import TaskList from "@/components/TaskList";

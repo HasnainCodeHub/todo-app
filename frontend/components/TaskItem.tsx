@@ -44,7 +44,7 @@ export default function TaskItem({ task, onToggleComplete, onDelete }: TaskItemP
         className="bg-bg-secondary p-4 rounded-lg border border-white/10 flex flex-col gap-4 transition-shadow hover:shadow-lg"
       >
         <div className="flex items-start gap-4">
-            <div className={`w-1.5 flex-shrink-0 h-8 bg-gradient-to-b ${priorityColors[task.priority] || priorityColors.low} rounded-full`} />
+            <div className={`w-1.5 flex-shrink-0 h-8 bg-gradient-to-b ${priorityColors[task.priority ?? 'low'] || priorityColors['low']} rounded-full`} />
             <div className="flex-grow">
               <h4 className={`font-semibold text-text-primary ${task.completed ? 'line-through text-opacity-50' : ''}`}>
                 {task.title}
@@ -77,7 +77,7 @@ export default function TaskItem({ task, onToggleComplete, onDelete }: TaskItemP
         </div>
       </motion.div>
       <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} onConfirm={handleDelete} title="Confirm Deletion">
-        <p>Are you sure you want to delete the task "{task.title}"?</p>
+        <p>Are you sure you want to delete the task &ldquo;{task.title}&rdquo;?</p>
       </Modal>
     </>
   );

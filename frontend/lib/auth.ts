@@ -25,7 +25,7 @@ export function getAuthToken(): string | null {
  * @param token - The JWT token.
  * @param user - The user object to store.
  */
-export function setAuthToken(token: string, user: any): void {
+export function setAuthToken(token: string, user: Record<string, unknown>): void {
   if (isBrowser()) {
     localStorage.setItem(TOKEN_KEY, token);
     localStorage.setItem(USER_KEY, JSON.stringify(user));
@@ -60,7 +60,7 @@ export function isAuthenticated(): boolean {
  * @param token - The JWT token string.
  * @returns The decoded payload or null if decoding fails.
  */
-function decodeJWT(token: string): any | null {
+function decodeJWT(token: string): Record<string, unknown> | null {
   try {
     const parts = token.split('.');
     if (parts.length !== 3) {
@@ -68,7 +68,7 @@ function decodeJWT(token: string): any | null {
     }
     const payload = parts[1];
     const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
-    return JSON.parse(decoded);
+    return JSON.parse(decoded) as Record<string, unknown>;
   } catch (error) {
     console.error('Failed to decode JWT:', error);
     return null;
@@ -79,12 +79,12 @@ function decodeJWT(token: string): any | null {
  * Retrieves the current user's object from localStorage.
  * @returns The user object or null if not found.
  */
-export function getCurrentUser(): any | null {
+export function getCurrentUser(): Record<string, unknown> | null {
   if (!isBrowser()) return null;
   const userStr = localStorage.getItem(USER_KEY);
   if (!userStr) return null;
   try {
-    return JSON.parse(userStr);
+    return JSON.parse(userStr) as Record<string, unknown>;
   } catch (error) {
     console.error('Failed to parse user from localStorage:', error);
     return null;
@@ -102,6 +102,9 @@ export async function register(
   fatherName: string,
   phoneNumber: string
 ) {
+  // Strip non-digit characters (e.g., '+' from country code) for backend validation
+  const sanitizedPhone = phoneNumber.replace(/\D/g, "");
+
   const response = await fetch(`${API_BASE_URL}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -110,7 +113,7 @@ export async function register(
       password,
       full_name: fullName,
       father_name: fatherName,
-      phone_number: phoneNumber,
+      phone_number: sanitizedPhone,
     }),
   });
 

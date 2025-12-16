@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, FormEvent, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Input from "@/components/ui/Input";
@@ -9,7 +9,7 @@ import { login, isAuthenticated } from "@/lib/auth";
 import AppLogo from "@/components/icons/AppLogo";
 import PageWrapper from "@/components/global/PageWrapper";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -103,5 +103,13 @@ export default function LoginPage() {
         </div>
       </div>
     </PageWrapper>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-bg-primary">Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }

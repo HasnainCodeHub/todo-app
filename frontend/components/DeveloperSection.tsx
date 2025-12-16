@@ -103,7 +103,6 @@ const itemVariants = {
     y: 0,
     transition: {
       duration: 0.5,
-      ease: "easeOut",
     },
   },
 };
@@ -210,7 +209,7 @@ const DeveloperSection = () => {
               variants={containerVariants}
               className="flex flex-wrap gap-2 justify-center lg:justify-start"
             >
-              {skills.map((skill, index) => (
+              {skills.map((skill) => (
                 <motion.span
                   key={skill}
                   variants={skillVariants}
