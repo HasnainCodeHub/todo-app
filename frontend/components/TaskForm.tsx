@@ -77,7 +77,7 @@ export default function TaskForm({
       <div>
         <label
           htmlFor="title"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-text-primary mb-2"
         >
           Title *
         </label>
@@ -87,7 +87,7 @@ export default function TaskForm({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 bg-bg-primary border border-white/20 rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-accent-primary"
           placeholder="Enter task title"
         />
       </div>
@@ -95,7 +95,7 @@ export default function TaskForm({
       <div>
         <label
           htmlFor="description"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-text-primary mb-2"
         >
           Description
         </label>
@@ -104,7 +104,7 @@ export default function TaskForm({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 bg-bg-primary border border-white/20 rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-accent-primary"
           placeholder="Enter task description (optional)"
         />
       </div>
@@ -113,7 +113,7 @@ export default function TaskForm({
         <div>
           <label
             htmlFor="priority"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-text-primary mb-2"
           >
             Priority
           </label>
@@ -121,7 +121,7 @@ export default function TaskForm({
             id="priority"
             value={priority}
             onChange={(e) => setPriority(e.target.value as Task["priority"])}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 bg-bg-primary border border-white/20 rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
           >
             <option value="low">Low</option>
             <option value="medium">Medium</option>
@@ -132,7 +132,7 @@ export default function TaskForm({
         <div>
           <label
             htmlFor="recurrence"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-text-primary mb-2"
           >
             Recurrence
           </label>
@@ -142,7 +142,7 @@ export default function TaskForm({
             onChange={(e) =>
               setRecurrence(e.target.value as Task["recurrence"])
             }
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 bg-bg-primary border border-white/20 rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
           >
             <option value="none">None</option>
             <option value="daily">Daily</option>
@@ -155,7 +155,7 @@ export default function TaskForm({
       <div>
         <label
           htmlFor="tags"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-text-primary mb-2"
         >
           Tags
         </label>
@@ -164,10 +164,10 @@ export default function TaskForm({
           id="tags"
           value={tags}
           onChange={(e) => setTags(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 bg-bg-primary border border-white/20 rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-accent-primary"
           placeholder="Comma-separated tags (e.g., work, urgent)"
         />
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs text-text-secondary">
           Separate multiple tags with commas
         </p>
       </div>
@@ -175,7 +175,7 @@ export default function TaskForm({
       <div>
         <label
           htmlFor="dueDate"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-text-primary mb-2"
         >
           Due Date
         </label>
@@ -184,7 +184,7 @@ export default function TaskForm({
           id="dueDate"
           value={dueDate}
           onChange={(e) => setDueDate(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 bg-bg-primary border border-white/20 rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
         />
       </div>
 

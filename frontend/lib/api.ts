@@ -33,7 +33,7 @@ export class ApiError extends Error {
   constructor(
     public status: number,
     message: string,
-    public detail?: any
+    public detail?: unknown
   ) {
     super(message);
     this.name = "ApiError";
@@ -86,7 +86,7 @@ function buildUrl(path = "", params?: URLSearchParams): string {
   return fullUrl.toString();
 }
 
-export async function fetchTasks(filters?: TaskFilters, sort?: any): Promise<Task[]> {
+export async function fetchTasks(filters?: TaskFilters, sort?: { sort_by?: string; sort_order?: string }): Promise<Task[]> {
   const params = new URLSearchParams();
   if (filters?.status) params.append("status", filters.status);
   if (sort?.sort_by) params.append("sort_by", sort.sort_by);
@@ -153,9 +153,9 @@ export async function toggleTaskStatus(id: number, completed: boolean): Promise<
   return normalizeTask(task);
 }
 
-export async function fetchUserProfile() {
+export async function fetchUserProfile(): Promise<Record<string, unknown>> {
     const response = await fetch(buildUrl("/users/me"), {
         headers: requireAuthHeaders(),
     });
-    return handleResponse(response);
+    return handleResponse<Record<string, unknown>>(response);
 }

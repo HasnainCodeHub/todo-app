@@ -2,7 +2,7 @@
 name = "todo-api"
 version = "2.0.0"
 description = "Full-Stack Todo Web App - Backend API (Phase II)"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.32.0",

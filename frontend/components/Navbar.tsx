@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
@@ -15,7 +15,7 @@ const Navbar = () => {
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   const [isProfileCardVisible, setIsProfileCardVisible] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<Record<string, unknown> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const profileCardRef = useRef<HTMLDivElement>(null);
@@ -67,7 +67,7 @@ const Navbar = () => {
   return (
     <>
       <motion.header
-        style={{ '--bg-opacity': bgOpacity } as any}
+        style={{ '--bg-opacity': bgOpacity } as CSSProperties}
         className="sticky top-0 z-50 bg-bg-primary/[var(--bg-opacity)] backdrop-blur-lg"
       >
         <nav className="container mx-auto px-4 py-3 border-b border-white/10">
@@ -76,11 +76,13 @@ const Navbar = () => {
               <AppLogo className="w-8 h-8" />
               <Link href="/" className="text-xl font-bold text-text-primary hidden md:inline">The Evolution of Todo</Link>
             </div>
-            <div className="hidden md:flex gap-4 md:gap-6 items-center">
-              <Link href="/dashboard" className="text-text-secondary hover:text-text-primary flex items-center gap-2"><LayoutDashboard size={18}/> Tasks</Link>
-              <Link href="/chatbot" className="text-text-secondary hover:text-text-primary flex items-center gap-2"><MessageCircle size={18}/> Chatbot</Link>
-              <Link href="/architecture" className="text-text-secondary hover:text-text-primary flex items-center gap-2"><Share2 size={18}/> Architecture</Link>
-              <Link href="/deployment" className="text-text-secondary hover:text-text-primary flex items-center gap-2"><Rocket size={18}/> Deployment</Link>
+            <div className="hidden md:flex flex-col items-center gap-2">
+              <div className="flex gap-4 md:gap-6 items-center">
+                <Link href="/dashboard" className="text-text-secondary hover:text-text-primary flex items-center gap-2"><LayoutDashboard size={18}/> Tasks</Link>
+                <Link href="/chatbot" className="text-text-secondary hover:text-text-primary flex items-center gap-2"><MessageCircle size={18}/> Chatbot</Link>
+                <Link href="/architecture" className="text-text-secondary hover:text-text-primary flex items-center gap-2"><Share2 size={18}/> Architecture</Link>
+                <Link href="/deployment" className="text-text-secondary hover:text-text-primary flex items-center gap-2"><Rocket size={18}/> Deployment</Link>
+              </div>
             </div>
             {authenticated ? (
               <div className="relative flex items-center gap-4" ref={profileCardRef}>
@@ -90,15 +92,15 @@ const Navbar = () => {
                       <div className="p-4 border-b border-white/20">
                       {error ? <p className="text-sm text-red-500">{error}</p> : user ? (
                           <>
-                          <p className="text-md font-medium text-text-primary">{user.full_name}</p>
-                          <p className="text-sm text-text-secondary">{user.email}</p>
+                          <p className="text-md font-medium text-text-primary">{user.full_name as string}</p>
+                          <p className="text-sm text-text-secondary">{user.email as string}</p>
                           </>
                       ) : <p className="text-sm text-text-secondary">Loading...</p>}
                       </div>
                       {user &&
                       <div className="p-4 text-sm text-text-secondary space-y-1">
-                          <p><span className="font-semibold">Father:</span> {user.father_name}</p>
-                          <p><span className="font-semibold">Phone:</span> {user.phone_number}</p>
+                          <p><span className="font-semibold">Father's Name:</span> {(user.father_name as string) || 'N/A'}</p>
+                          <p><span className="font-semibold">Phone:</span> {(user.phone_number as string) || 'N/A'}</p>
                       </div>
                       }
                       <div className="p-2">

@@ -83,10 +83,11 @@ get_session = get_db
 # Startup helpers
 # -------------------------------------------------
 async def create_tables() -> None:
-    logger.warning("🚨 DEVELOPMENT MODE: Dropping and recreating all tables")
+    """Create tables if they don't exist. Does NOT drop existing tables."""
+    logger.info("Creating database tables if they don't exist...")
     async with engine.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.drop_all)
         await conn.run_sync(SQLModel.metadata.create_all)
+    logger.info("Database tables ready.")
 
 # -------------------------------------------------
 # Shutdown

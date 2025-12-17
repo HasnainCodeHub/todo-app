@@ -19,6 +19,7 @@ class Settings(BaseSettings):
                      The application auto-converts to async format if needed.
         BETTER_AUTH_SECRET: Secret key for JWT HS256 signature verification.
                            Required for production; defaults to test value in TESTING mode.
+        CORS_ORIGINS: Comma-separated list of allowed CORS origins.
         APP_NAME: Application name for logging and metadata.
         DEBUG: Enable debug mode (default: False).
         TESTING: Flag indicating test environment (default: 0).
@@ -27,6 +28,7 @@ class Settings(BaseSettings):
 
     DATABASE_URL: str = ""
     BETTER_AUTH_SECRET: str = ""
+    CORS_ORIGINS: str = "http://localhost:3000,http://127.0.0.1:3000"
 
     APP_NAME: str = "Todo API"
     DEBUG: bool = False
@@ -74,6 +76,11 @@ class Settings(BaseSettings):
     def is_testing(self) -> bool:
         """Check if running in test mode."""
         return os.getenv("TESTING") == "1" or self.TESTING == "1"
+
+    @property
+    def cors_origins_list(self) -> list[str]:
+        """Parse CORS_ORIGINS string into a list."""
+        return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
 
 
 # Global settings instance

@@ -176,6 +176,64 @@ localStorage.setItem('user_id', 'demo_user');
 // Refresh the page
 ```
 
+---
+
+## Railway Deployment (One-Click Deploy)
+
+Deploy both backend and frontend as separate Railway services.
+
+### Backend Deployment
+
+1. **Create New Project on Railway**
+   - Go to [railway.app](https://railway.app)
+   - Click "New Project" → "Deploy from GitHub repo"
+   - Select `backend` folder as root directory
+
+2. **Add PostgreSQL Database**
+   - In your project, click "New" → "Database" → "PostgreSQL"
+   - Railway auto-creates `DATABASE_URL` variable
+
+3. **Set Environment Variables**
+   | Variable | Value |
+   |----------|-------|
+   | `DATABASE_URL` | (auto-set by PostgreSQL plugin) |
+   | `BETTER_AUTH_SECRET` | Generate: `openssl rand -base64 32` |
+   | `CORS_ORIGINS` | `https://your-frontend.up.railway.app,http://localhost:3000` |
+
+4. **Deploy**
+   - Railway auto-detects Dockerfile and deploys
+   - Check logs for successful startup
+
+### Frontend Deployment
+
+1. **Create New Service**
+   - In same project, click "New" → "Deploy from GitHub repo"
+   - Select `frontend` folder as root directory
+
+2. **Set Environment Variables**
+   | Variable | Value |
+   |----------|-------|
+   | `NEXT_PUBLIC_API_BASE_URL` | `https://your-backend.up.railway.app/api` |
+
+3. **Deploy**
+   - Railway auto-detects Next.js and deploys
+
+### Post-Deployment
+
+1. **Update Backend CORS**
+   - Add your frontend Railway URL to `CORS_ORIGINS`
+
+2. **Verify Health**
+   ```bash
+   curl https://your-backend.up.railway.app/health
+   ```
+
+3. **Test Frontend**
+   - Visit your frontend URL
+   - Register a new account or login
+
+---
+
 ### Project Structure
 
 ```

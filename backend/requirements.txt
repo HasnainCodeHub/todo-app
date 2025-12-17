@@ -1,0 +1,24 @@
+# Todo API Backend - Production Dependencies
+# Minimal set for Railway deployment
+
+# Core Framework
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+python-multipart>=0.0.6
+
+# Database
+sqlmodel>=0.0.22
+asyncpg>=0.30.0
+
+# Authentication
+PyJWT>=2.8.0
+passlib[bcrypt]>=1.7.4
+bcrypt==4.0.1
+email-validator>=2.1.0
+
+# Configuration
+python-dotenv>=1.0.0
+pydantic-settings>=2.6.0
+
+# Utilities
+python-dateutil>=2.9.0
