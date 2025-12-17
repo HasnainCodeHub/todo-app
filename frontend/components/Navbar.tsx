@@ -76,11 +76,13 @@ const Navbar = () => {
               <AppLogo className="w-8 h-8" />
               <Link href="/" className="text-xl font-bold text-text-primary hidden md:inline">The Evolution of Todo</Link>
             </div>
-            <div className="hidden md:flex gap-4 md:gap-6 items-center">
-              <Link href="/dashboard" className="text-text-secondary hover:text-text-primary flex items-center gap-2"><LayoutDashboard size={18}/> Tasks</Link>
-              <Link href="/chatbot" className="text-text-secondary hover:text-text-primary flex items-center gap-2"><MessageCircle size={18}/> Chatbot</Link>
-              <Link href="/architecture" className="text-text-secondary hover:text-text-primary flex items-center gap-2"><Share2 size={18}/> Architecture</Link>
-              <Link href="/deployment" className="text-text-secondary hover:text-text-primary flex items-center gap-2"><Rocket size={18}/> Deployment</Link>
+            <div className="hidden md:flex flex-col items-center gap-2">
+              <div className="flex gap-4 md:gap-6 items-center">
+                <Link href="/dashboard" className="text-text-secondary hover:text-text-primary flex items-center gap-2"><LayoutDashboard size={18}/> Tasks</Link>
+                <Link href="/chatbot" className="text-text-secondary hover:text-text-primary flex items-center gap-2"><MessageCircle size={18}/> Chatbot</Link>
+                <Link href="/architecture" className="text-text-secondary hover:text-text-primary flex items-center gap-2"><Share2 size={18}/> Architecture</Link>
+                <Link href="/deployment" className="text-text-secondary hover:text-text-primary flex items-center gap-2"><Rocket size={18}/> Deployment</Link>
+              </div>
             </div>
             {authenticated ? (
               <div className="relative flex items-center gap-4" ref={profileCardRef}>
@@ -97,8 +99,8 @@ const Navbar = () => {
                       </div>
                       {user &&
                       <div className="p-4 text-sm text-text-secondary space-y-1">
-                          <p><span className="font-semibold">Father:</span> {user.father_name as string}</p>
-                          <p><span className="font-semibold">Phone:</span> {user.phone_number as string}</p>
+                          <p><span className="font-semibold">Father's Name:</span> {(user.father_name as string) || 'N/A'}</p>
+                          <p><span className="font-semibold">Phone:</span> {(user.phone_number as string) || 'N/A'}</p>
                       </div>
                       }
                       <div className="p-2">
