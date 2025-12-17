@@ -93,7 +93,7 @@ export function getCurrentUser(): Record<string, unknown> | null {
 
 // NOTE: API call functions are kept for now as per instructions,
 // but in a larger refactor, these would move to a dedicated `lib/api.ts`.
-const API_BASE_URL = "http://127.0.0.1:8001/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8001/api";
 
 export async function register(
   email: string,

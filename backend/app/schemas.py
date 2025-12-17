@@ -26,6 +26,7 @@ class UserResponse(BaseModel):
     id: int
     email: EmailStr
     full_name: str
+    father_name: str | None = None
     phone_number: str
     created_at: datetime
 

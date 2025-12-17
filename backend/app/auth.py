@@ -1,3 +1,5 @@
+# WARNING: This file is not used in the project. It is a placeholder for the authentication system.
+
 import jwt
 from datetime import datetime, timezone, timedelta
 from passlib.context import CryptContext
